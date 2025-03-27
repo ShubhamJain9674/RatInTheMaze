@@ -14,3 +14,5 @@ improvement:-
 
 -Input need to be reworked using Delta Time Scaling is the most common method for general input smoothing.
 this will make game feel more responsive
+
+-poor image loading and utilization causing considerable slowdown.
