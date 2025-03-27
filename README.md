@@ -1,0 +1,16 @@
+modules used : 
+-PYGAME 
+-SYS
+
+Known bugs:-
+
+-RIGHT LEFT DIFFERENT FROM UP DOWN NEED TO FIX FOR COLLISION ISSUES
+
+-INTRO ANIMATION CIRCLE PARTICLE EFFECT NOT WORKING (NOT TRANSFORMING NOT CREATING NEW VARIABLES)
+
+-COLLISION FOR RAT AND THE MAZE NEED TO BE DONE BY RETURNING THE RECT VALUES AND STORING IT IN A LIST .COLLISION NEED TO BE CHECKED BY THE RAT IN THE WHILE LOOP
+
+improvement:-
+
+-Input need to be reworked using Delta Time Scaling is the most common method for general input smoothing.
+this will make game feel more responsive
