@@ -4,11 +4,11 @@ class line:
     difficulty="EASY"
     def __init__(self,posx,posy,screen):
         if(line.difficulty=="EASY"):
-            self.line=pygame.image.load("LINE.png").convert_alpha()
+            self.line=pygame.image.load("Images/LINE.png").convert_alpha()
         elif(line.difficulty=="MEDIUM"):
-            self.line=pygame.image.load("LINE3.png").convert_alpha()
+            self.line=pygame.image.load("Images/LINE3.png").convert_alpha()
         else:
-            self.line=pygame.image.load("LINE4.png").convert_alpha()
+            self.line=pygame.image.load("Images/LINE4.png").convert_alpha()
             
         self.line_rect=self.line.get_rect(midtop=(posx,posy))
         self.psx=posx

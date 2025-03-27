@@ -17,11 +17,11 @@ Gamescreen.fill('white')
 pygame.display.set_caption("Rat in the Maze") #game Caption
 clock=pygame.time.Clock() #clock object
 
-RAT=pygame.image.load("rat.png").convert_alpha()
+RAT=pygame.image.load("Images/rat.png").convert_alpha()
 RATPOS=(100,100)
 RAT_RECT=RAT.get_rect(midbottom=RATPOS)
-RAT_IMAGE="rat.png"
-DOWN_IMAGES=("rat.png","rat_DL.png","rat_DR.png","rat_RD.png","rat_LD.png","rat_LEFT.png","rat_RIGHT.png")
+RAT_IMAGE="Images/rat.png"
+DOWN_IMAGES=("Images/rat.png","Images/rat_DL.png","Images/rat_DR.png","Images/rat_RD.png","Images/rat_LD.png","Images/rat_LEFT.png","Images/rat_RIGHT.png")
 UP_IMAGES=()
 USERINPUT=""
 
@@ -30,10 +30,10 @@ RATSPEED=15
 MOTIONFLIP=3
 POS_X=130
 POS_Y=230
-BGIMG=pygame.image.load("Background.png").convert_alpha()
-BGIMG2=pygame.image.load("Background4.png").convert_alpha()
-BGIMG3=pygame.image.load("Background5.png").convert_alpha()
-CHEESE=pygame.image.load("CHEESECAKE.png").convert_alpha()
+BGIMG=pygame.image.load("Images/Background.png").convert_alpha()
+BGIMG2=pygame.image.load("Images/Background4.png").convert_alpha()
+BGIMG3=pygame.image.load("Images/Background5.png").convert_alpha()
+CHEESE=pygame.image.load("Images/CHEESECAKE.png").convert_alpha()
 GAMESTATE='STARTPAGE'
 
 FPSCOUNTER=0
@@ -42,9 +42,9 @@ SPAWNTIME=0
 MAZERECT=[]
 
 #variables for intro:-
-BGIMG_SA=pygame.image.load("RAT_SA1_EDIT2.png").convert_alpha()
+BGIMG_SA=pygame.image.load("Images/RAT_SA1_EDIT2.png").convert_alpha()
 
-ANYKEYTOSTART=pygame.image.load("START_GAME.png").convert_alpha()
+ANYKEYTOSTART=pygame.image.load("Images/START_GAME.png").convert_alpha()
 INTRO_ALPHA=1
 BGIMG_SA.set_alpha(INTRO_ALPHA)
 INTROSPEED_SA=0.5
@@ -81,13 +81,13 @@ RIGHTBLOCK=[]
 
 
 #mainmenu button variables:-
-EASY=pygame.image.load("EASY.png").convert_alpha()
-MEDIUM=pygame.image.load("MEDIUM.png").convert_alpha()
-HARD=pygame.image.load("HARD.png").convert_alpha()
+EASY=pygame.image.load("Images/EASY.png").convert_alpha()
+MEDIUM=pygame.image.load("Images/MEDIUM.png").convert_alpha()
+HARD=pygame.image.load("Images/HARD.png").convert_alpha()
 DIFFICULTY_BTN=Button(1000,300,EASY,0.1)
 DIFFICULTY="EASY"
 DIF_BTN_CLICK=False
-GAMEMODE=pygame.image.load("GAMEMODE.png").convert_alpha()
+GAMEMODE=pygame.image.load("Images/GAMEMODE.png").convert_alpha()
 GAMEMODE=pygame.transform.scale(GAMEMODE,(int(GAMEMODE.get_width()*0.1),int(GAMEMODE.get_height()*0.1)))
 
 
@@ -95,14 +95,14 @@ GAMEMODE=pygame.transform.scale(GAMEMODE,(int(GAMEMODE.get_width()*0.1),int(GAME
 #timer Variables:-
 pygame.font.init()
 font=pygame.font.SysFont('CopperplatEF Cond',80)
-TIMERCANVAS=pygame.image.load("TimerCanvas.png").convert_alpha()
+TIMERCANVAS=pygame.image.load("Images/TimerCanvas.png").convert_alpha()
 TCOUNTER=30
 start=time.ctime()
 buffer=start
 ZERO=False
 
 #WINSTATE
-FINISHLINE=pygame.image.load("FINISHLINE.png").convert_alpha()
+FINISHLINE=pygame.image.load("Images/FINISHLINE.png").convert_alpha()
 
 FINISH_RECT=FINISHLINE.get_rect()
 FINISH_RECT.topleft=(1130,550)
@@ -123,13 +123,13 @@ if(BESTSCORE==""):
 
 #ELEMENTS:-
     #SPEEDBOOST:-
-SPEEDBOOST=pygame.image.load("SPEEDBOOST.png").convert_alpha()
+SPEEDBOOST=pygame.image.load("Images/SPEEDBOOST.png").convert_alpha()
 SPEEDBOOST_RECT=SPEEDBOOST.get_rect()
 SPEEDPOS=((100,200),(310,200),(520,200),(730,200),(940,200),(100,410),(310,410),(520,410),(730,410),(940,410))
 SPEEDBOOST_RECT.topleft=random.choice(SPEEDPOS)
 SPEEDBOOST.set_alpha(50)
     #RANDOM HIGH RISK HIGH REWARD:-
-RANDOMBOX=pygame.image.load("RANDOM.png").convert_alpha()
+RANDOMBOX=pygame.image.load("Images/RANDOM.png").convert_alpha()
 RANDOMBOX_RECT=RANDOMBOX.get_rect()
 RANDOMBOXPOS=((535,290),(605,220),(675,360),(535,430),(605,500),(745,500))
 RANDOMBOX_RECT.topleft=random.choice(RANDOMBOXPOS)
@@ -154,7 +154,7 @@ def difficultySelection():
         case "EASY":
             DIFFICULTY="MEDIUM"
             DIFFICULTY_BTN.__init__(1000,300,MEDIUM,0.1)
-            BGIMG=pygame.image.load("Background2.png").convert_alpha()
+            BGIMG=pygame.image.load("Images/Background2.png").convert_alpha()
             TCOUNTER=25
             line.difficulty="MEDIUM"
             SCORE=4000
@@ -162,7 +162,7 @@ def difficultySelection():
             DIFFICULTY="HARD"
             DIFFICULTY_BTN.__init__(1000,300,HARD,0.1)
             TCOUNTER=22
-            BGIMG=pygame.image.load("Background3.png").convert_alpha()
+            BGIMG=pygame.image.load("Images/Background3.png").convert_alpha()
             line.difficulty="HARD"
             SCORE=8000
         case "HARD":
@@ -170,7 +170,7 @@ def difficultySelection():
             DIFFICULTY="EASY"
             DIFFICULTY_BTN.__init__(1000,300,EASY,0.1)
             TCOUNTER=30
-            BGIMG=pygame.image.load("Background.png").convert_alpha()
+            BGIMG=pygame.image.load("Images/Background.png").convert_alpha()
             SCORE=2000
     DIF_BTN_CLICK=True
 
@@ -301,7 +301,7 @@ def collisionCheck():
 
 class P_circles:
     def __init__(self,SCREEN):
-        self.circle=pygame.image.load("P_CIRCLE.png").convert_alpha()
+        self.circle=pygame.image.load("Images/P_CIRCLE.png").convert_alpha()
         self.circle.set_alpha(50)
         self.velocity=(randint(-5,-1),randint(1,5))
         self.RESX=255
@@ -437,49 +437,49 @@ def RatMotion(key):
 
     match MOTIONFLIP:
           case 0:
-              RAT=pygame.image.load("rat_UP.png").convert_alpha()
-              RAT_IMAGE="rat_UP.png"
+              RAT=pygame.image.load("Images/rat_UP.png").convert_alpha()
+              RAT_IMAGE="Images/rat_UP.png"
           case 1:
-              RAT=pygame.image.load("rat_UL.png").convert_alpha()
-              RAT_IMAGE="rat_UL.png"
+              RAT=pygame.image.load("Images/rat_UL.png").convert_alpha()
+              RAT_IMAGE="Images/rat_UL.png"
           case 2:
-              RAT=pygame.image.load("rat_UR.png").convert_alpha()
-              RAT_IMAGE="rat_UR.png"
+              RAT=pygame.image.load("Images/rat_UR.png").convert_alpha()
+              RAT_IMAGE="Images/rat_UR.png"
           case 3:
-              RAT=pygame.image.load("rat.png").convert_alpha()
-              RAT_IMAGE="rat.png"
+              RAT=pygame.image.load("Images/rat.png").convert_alpha()
+              RAT_IMAGE="Images/rat.png"
           case 4:
-              RAT=pygame.image.load("rat_DL.png").convert_alpha()
-              RAT_IMAGE="rat_DL.png"
+              RAT=pygame.image.load("Images/rat_DL.png").convert_alpha()
+              RAT_IMAGE="Images/rat_DL.png"
           case 5:
-              RAT=pygame.image.load("rat_DR.png").convert_alpha()
-              RAT_IMAGE="rat_DR.png"
+              RAT=pygame.image.load("Images/rat_DR.png").convert_alpha()
+              RAT_IMAGE="Images/rat_DR.png"
           case 6:
-              RAT=pygame.image.load("rat_RIGHT.png").convert_alpha()
-              RAT_IMAGE="rat_RIGHT.png"
+              RAT=pygame.image.load("Images/rat_RIGHT.png").convert_alpha()
+              RAT_IMAGE="Images/rat_RIGHT.png"
           case 7:
-              RAT=pygame.image.load("rat_RD.png").convert_alpha()
-              RAT_IMAGE="rat_RD.png"
+              RAT=pygame.image.load("Images/rat_RD.png").convert_alpha()
+              RAT_IMAGE="Images/rat_RD.png"
           case 8:
-              RAT=pygame.image.load("rat_RU.png").convert_alpha()
-              RAT_IMAGE="rat_RU.png"
+              RAT=pygame.image.load("Images/rat_RU.png").convert_alpha()
+              RAT_IMAGE="Images/rat_RU.png"
           case 9:
-              RAT=pygame.image.load("rat_LEFT.png").convert_alpha()
-              RAT_IMAGE="rat_LEFT.png"
+              RAT=pygame.image.load("Images/rat_LEFT.png").convert_alpha()
+              RAT_IMAGE="Images/rat_LEFT.png"
           case 10:
-              RAT=pygame.image.load("rat_LD.png").convert_alpha()
-              RAT_IMAGE="rat_LD.png"
+              RAT=pygame.image.load("Images/rat_LD.png").convert_alpha()
+              RAT_IMAGE="Images/rat_LD.png"
           case 11:
-              RAT=pygame.image.load("rat_LU.png").convert_alpha()
-              RAT_IMAGE="rat_LU.png"
+              RAT=pygame.image.load("Images/rat_LU.png").convert_alpha()
+              RAT_IMAGE="Images/rat_LU.png"
         
           case 12:
-              if(RAT_IMAGE=="RAT_SHOCKED.PNG"):
+              if(RAT_IMAGE=="Images/RAT_SHOCKED.PNG"):
                       
-                  RAT_IMAGE="RAT.PNG"
+                  RAT_IMAGE="Images/RAT.PNG"
                   RAT=pygame.image.load(RAT_IMAGE).convert_alpha()
               else:
-                  RAT_IMAGE="RAT_SHOCKED.PNG"
+                  RAT_IMAGE="Images/RAT_SHOCKED.PNG"
                   RAT=pygame.image.load(RAT_IMAGE).convert_alpha()
                       
               if(RATSHOCKCOUNTER==5):
