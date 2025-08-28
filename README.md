@@ -1,4 +1,4 @@
-![Game]("/Images/ProjectSS.png")
+![Game](Images/ProjectSS.png)
 
 # About 
 
