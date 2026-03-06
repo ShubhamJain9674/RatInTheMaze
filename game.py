@@ -1,18 +1,20 @@
 import pygame
-
+from rat import Rat
 
 
 class Game:
 
     def __init__(self):
-        self.running = True
-
+        
         pygame.init()
+
+        self.running = True
         self.screen = pygame.display.set_mode((1280,720))
         self.screen.fill("white")
+        self.canvas = pygame.Surface((1280,720))
         self.clock = pygame.time.Clock()
 
-
+        self.player = Rat()
 
 
     
@@ -31,6 +33,11 @@ class Game:
     
     def render(self):
         
+        self.player.render(self.canvas)
+        
+        
+        
+        self.screen.blit(self.canvas,(0,0))
         pygame.display.flip()
 
 
