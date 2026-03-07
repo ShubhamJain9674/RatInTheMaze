@@ -1,4 +1,5 @@
 import pygame
+import math
 import json
 
 
@@ -6,30 +7,46 @@ class Animation:
 
     def __init__(self,
             sprite_sheet,
-            name
+            name,
+            flip = (False,False),
+            anim_speed = 10
         ):
 
         self.sprite_sheet = sprite_sheet
         self.name = name
         self.frame_number = -1
+        self.frame_time = 0
         self.anim_start = sprite_sheet.get_anim_start(name)
         self.anim_length = sprite_sheet.get_anim_length(name)
-
-        
+        self.flip = flip
+        self.anim_speed = anim_speed
 
     def play(self,dt) -> pygame.Surface:
 
-        self.frame_number = (self.frame_number + 1) % self.anim_length
+        self.frame_time = (self.frame_time + (dt * self.anim_speed) ) % self.anim_length
+        self.frame_number = math.floor(self.frame_time)
+
+        sprite = self.sprite_sheet.parse_sprite(self.name,str(self.frame_number))
+        sprite = pygame.transform.flip(sprite,self.flip[0],self.flip[1])           
         
-        return self.sprite_sheet.parse_sprite(self.name,str(self.frame_number))
+        return sprite
 
     def stop(self) -> pygame.Surface:
         self.frame_number = -1
-        return self.sprite_sheet.parse_sprite(self.name,str(frame_number))
+        sprite = self.sprite_sheet.parse_sprite(self.name,str(frame_number))
+        sprite = pygame.transform.flip(sprite,self.flip[0],self.flip[1])           
+
+        return sprite           
 
 
     def get_default(self) -> pygame.Surface:
-        return self.sprite_sheet.parse_sprite(self.name,str(-1))
+        
+        sprite = self.sprite_sheet.parse_sprite(self.name,str(-1))
+        sprite = pygame.transform.flip(sprite,self.flip[0],self.flip[1])           
+        
+        return sprite
+
+
 
 
 class SpriteSheet:
@@ -48,6 +65,12 @@ class SpriteSheet:
 
     def get_anim_length(self,name) -> int:
         return len(self.data[name]) - 1
+
+    def get_sprite_height(self,name):
+        return self.data[name]["-1"]['h']
+
+
+
 
     def get_anim_start(self,name):
 

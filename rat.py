@@ -1,7 +1,6 @@
 
 from spritesheet import SpriteSheet,Animation
 import pygame
-import math
 import os
 
 
@@ -18,10 +17,28 @@ class Rat(pygame.sprite.Sprite):
 
         self.rat_sprite_sheet = SpriteSheet(image_path)
         
-        self.animation = Animation(
+        self.r_animation = Animation(
             self.rat_sprite_sheet,
             "rat1_r"
         )
+        self.f_animation = Animation(
+            self.rat_sprite_sheet,
+            "rat1_f"
+        )
+        self.b_animation = Animation(
+            self.rat_sprite_sheet,
+            "rat1_b"
+        )
+        self.l_animation = Animation(
+            self.rat_sprite_sheet,
+            "rat1_r",
+            (True,False)
+        )
+
+
+        self.animation = self.f_animation
+
+
 
         self.rat = self.animation.get_default()
 
@@ -39,6 +56,18 @@ class Rat(pygame.sprite.Sprite):
         
         if(self.can_move):
             self.is_moving = True
+
+            if(dirn[1] >= 1):
+                self.animation = self.f_animation
+            if(dirn[1] <= -1):
+                self.animation = self.b_animation
+            if(dirn[0] >= 1):
+                self.animation = self.r_animation
+            if(dirn[0] <= -1):
+                self.animation = self.l_animation
+             
+
+
             self.posx = self.posx + self.speed * dirn[0] * dt
             self.posy = self.posy + self.speed * dirn[1] * dt
 

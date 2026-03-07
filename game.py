@@ -1,5 +1,7 @@
 import pygame
 from rat import Rat
+from maze import Wall,Cell
+
 
 
 class Command:
@@ -56,6 +58,10 @@ class Game:
         self.player_controller = PlayerController(self.player) 
         self.dt = 0
 
+        #debug
+        self.cell = Cell()
+
+        
     
     def handle_input(self):
         
@@ -100,10 +106,11 @@ class Game:
         
         self.canvas.fill("black")
         self.player.render(self.canvas,self.dt)
-        
-        
-        
+    
+        self.cell.render(self.canvas,self.dt)    
+
         self.screen.blit(self.canvas,(0,0))
+
         pygame.display.flip()
 
 
