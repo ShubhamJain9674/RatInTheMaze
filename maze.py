@@ -53,6 +53,12 @@ class Cell:
         self.b_wall = Wall((self.x + 0,self.y +self.l_wall.get_height()),True)
         self.r_wall = Wall((self.x + self.l_wall.get_height(),self.y + 0))
 
+        self.adj_cell_r = None
+        self.adj_cell_l = None
+        self.adj_cell_t = None
+        self.adj_cell_b = None
+
+        self.visited = False
 
     def render(self,canvas,dt):
         
@@ -60,6 +66,31 @@ class Cell:
         self.t_wall.render(canvas,dt)
         self.b_wall.render(canvas,dt)
         self.r_wall.render(canvas,dt)
+
+
+    def set_adjacent_cells(
+        left = None,
+        right = None,
+        top = None,
+        botton = None
+        ):
+        self.adj_cell_l = left
+        self.adj_cell_r = right
+        self.adj_cell_t = top
+        self.adj_cell_b = bottom
+
+    def JoinCells(self,parent_cell):
+        
+        # if(self.adj_cell_b == parent_cell):
+        #     del(self.b_wall)
+        #     self.b_wall = None
+        #     parent_cell.t_wall
+        pass                
+
+        
+
+
+    
 
 
     
