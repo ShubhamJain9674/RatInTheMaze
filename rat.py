@@ -1,8 +1,8 @@
 
-from spritesheet import SpriteSheet
+from spritesheet import SpriteSheet,Animation
 import pygame
+import math
 import os
-
 
 
 
@@ -17,8 +17,14 @@ class Rat(pygame.sprite.Sprite):
         image_path = os.path.join(BASE_DIR,"Images","r_spritesheet2.png")    
 
         self.rat_sprite_sheet = SpriteSheet(image_path)
-        self.rat = self.rat_sprite_sheet.get_sprite(0,0,16,16)
-        self.rat = pygame.transform.scale(self.rat,(50,50))
+        
+        self.animation = Animation(
+            self.rat_sprite_sheet,
+            "rat1_r"
+        )
+
+        self.rat = self.animation.get_default()
+
 
 
         self.posx = 50
@@ -26,7 +32,8 @@ class Rat(pygame.sprite.Sprite):
         self.speed = 100
         self.can_move = True
         self.is_moving = False
-        self.rat_frame = 1
+
+
 
     def move(self,dt,dirn = (0,0)):
         
@@ -34,22 +41,25 @@ class Rat(pygame.sprite.Sprite):
             self.is_moving = True
             self.posx = self.posx + self.speed * dirn[0] * dt
             self.posy = self.posy + self.speed * dirn[1] * dt
+
         
         self.is_moving = True
+
+    def stop(self):
+        self.is_moving = False
 
     def update(self):
         pass
 
-    def render(self,surface):
-
-        sprite_image = self.rat
+    def render(self,surface,dt):
         
         if(self.is_moving):
-            self.rat_frame= (self.rat_frame + 1) % 4
-            sprite_image = self.rat_sprite_sheet.parse_sprite("rat1","move" + str(self.rat_frame))
-            sprite_image = pygame.transform.scale(sprite_image,(50,50))
-        
+            sprite_image = self.animation.play(dt)
+        else:
+            sprite_image = self.animation.get_default()
 
+
+        sprite_image = pygame.transform.scale(sprite_image,(50,50))
         surface.blit(sprite_image,(self.posx,self.posy))
 
 

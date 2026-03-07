@@ -10,26 +10,33 @@ class Command:
         pass
 
 class MoveCommand(Command):
-    def __init__(self,dirn = (0,0)):
+
+    def __init__(self,character=None,dirn = (0,0)):
         super().__init__()
         self.dirn = dirn
+        self.character = character
 
-    def execute(self,player,dt):
-        player.move(dt,self.dirn)
+    def execute(self,dt,player=None):
+        if(player):
+            player.move(dt,self.dirn)
+        elif(self.character):
+            self.character.move(dt,self.dirn)
+        else:
+            print("No character to move")
 
 
 class PlayerController:
     
-    def __init__(self):
+    def __init__(self,player):
+        self.player = player
         
-        self.w_command = MoveCommand((0,-1))
-        self.a_command = MoveCommand((-1,0))
-        self.s_command = MoveCommand((0,1))
-        self.d_command = MoveCommand((1,0))
+        self.w_command = MoveCommand(player,(0,-1))
+        self.a_command = MoveCommand(player,(-1,0))
+        self.s_command = MoveCommand(player,(0,1))
+        self.d_command = MoveCommand(player,(1,0))
 
-
-
-
+    def stop_player(self):
+        self.player.stop()
 
 
 class Game:
@@ -46,8 +53,8 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.player = Rat()
-        self.player_controller = PlayerController() 
-
+        self.player_controller = PlayerController(self.player) 
+        self.dt = 0
 
     
     def handle_input(self):
@@ -61,15 +68,25 @@ class Game:
         pygame.event.clear()
         
         keys = pygame.key.get_pressed()
-        
+
+        player_moving = False
+    
         if(keys[pygame.K_w]):
-            self.player_controller.w_command.execute(self.player,self.dt)
+            self.player_controller.w_command.execute(self.dt)
+            player_moving = True
         if(keys[pygame.K_a]):
-            self.player_controller.a_command.execute(self.player,self.dt)
+            self.player_controller.a_command.execute(self.dt)
+            player_moving = True
         if(keys[pygame.K_s]):
-            self.player_controller.s_command.execute(self.player,self.dt)
+            self.player_controller.s_command.execute(self.dt)
+            player_moving = True
         if(keys[pygame.K_d]):
-            self.player_controller.d_command.execute(self.player,self.dt)
+            self.player_controller.d_command.execute(self.dt)
+            player_moving = True
+
+        if(not player_moving):
+            self.player_controller.stop_player()
+        
             
 
 
@@ -81,8 +98,8 @@ class Game:
     
     def render(self):
         
-        self.canvas.fill("white")
-        self.player.render(self.canvas)
+        self.canvas.fill("black")
+        self.player.render(self.canvas,self.dt)
         
         
         

@@ -2,6 +2,36 @@ import pygame
 import json
 
 
+class Animation:
+
+    def __init__(self,
+            sprite_sheet,
+            name
+        ):
+
+        self.sprite_sheet = sprite_sheet
+        self.name = name
+        self.frame_number = -1
+        self.anim_start = sprite_sheet.get_anim_start(name)
+        self.anim_length = sprite_sheet.get_anim_length(name)
+
+        
+
+    def play(self,dt) -> pygame.Surface:
+
+        self.frame_number = (self.frame_number + 1) % self.anim_length
+        
+        return self.sprite_sheet.parse_sprite(self.name,str(self.frame_number))
+
+    def stop(self) -> pygame.Surface:
+        self.frame_number = -1
+        return self.sprite_sheet.parse_sprite(self.name,str(frame_number))
+
+
+    def get_default(self) -> pygame.Surface:
+        return self.sprite_sheet.parse_sprite(self.name,str(-1))
+
+
 class SpriteSheet:
 
     def __init__(self,filename):
@@ -15,6 +45,16 @@ class SpriteSheet:
             self.data = json.load(f)
 
         f.close()
+
+    def get_anim_length(self,name) -> int:
+        return len(self.data[name]) - 1
+
+    def get_anim_start(self,name):
+
+        sprite = self.data[name]["-1"]
+        return (sprite['x'],sprite['y'],sprite['w'],sprite['h'])
+
+
 
     def get_sprite(self,x,y,w,h) -> pygame.Surface:
 
@@ -32,7 +72,6 @@ class SpriteSheet:
         x,y,w,h = sprite['x'],sprite['y'],sprite['w'],sprite['h']
 
         image = self.get_sprite(x,y,w,h)
-        print(x,y,w,h)
 
         return image
 
