@@ -59,7 +59,7 @@ class Game:
         self.dt = 0
 
         #debug
-        self.maze = Maze((100,100),5,WallType.WALL3)
+        self.maze = Maze((100,100),(8,15),WallType.WALL3)
 
         
     
