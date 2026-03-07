@@ -1,6 +1,6 @@
 import pygame
 from rat import Rat
-from maze import Wall,Cell
+from maze import Wall,Cell,WallType,Maze
 
 
 
@@ -59,7 +59,7 @@ class Game:
         self.dt = 0
 
         #debug
-        self.cell = Cell()
+        self.maze = Maze((100,100),5,WallType.WALL3)
 
         
     
@@ -107,7 +107,7 @@ class Game:
         self.canvas.fill("black")
         self.player.render(self.canvas,self.dt)
     
-        self.cell.render(self.canvas,self.dt)    
+        self.maze.render(self.canvas,self.dt)    
 
         self.screen.blit(self.canvas,(0,0))
 
