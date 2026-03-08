@@ -3,6 +3,7 @@ import os
 import random
 from spritesheet import SpriteSheet,Animation
 from enum import Enum
+import time
 
 class WallLocation(Enum):
     TOP = 0
@@ -182,7 +183,7 @@ class Cell:
 
 class Maze:
 
-    def __init__(self,pos = (100,100),size = (3,3),w_type: WallType = WallType.WALL2):
+    def __init__(self,pos = (100,100),size = (3,3),w_type: WallType = WallType.WALL2,visualize=False):
 
         self.type = w_type
         if(size[0] < 3 or size[1] < 3):
@@ -196,7 +197,21 @@ class Maze:
         self.cells = []
         
         self.create_grid(pos)
-        self.create_maze_pattern()
+        
+        if(not visualize):
+            self.create_maze_pattern()
+            self.timestep_generate = True
+            self.t_gen_complete = False
+        else:
+            #visualize maze:-
+            self.timestep_generate = True
+            self.t_gen_complete = False
+
+            self.v_selected_cell = self.get_random_cell() #1) choose random cell
+            self.v_selected_cell.set_visited() #2) mark as visited
+            self.v_path = []
+            self.v_path.append(self.v_selected_cell) #3) push to stack
+
 
     
     def create_row(self,pos=(0,0),remove_bottom = False):
@@ -269,6 +284,9 @@ class Maze:
 
                 cell.print_adjacent()
 
+    def update(self,dt):
+        if(self.timestep_generate and not self.t_gen_complete):
+            self.timestep_maze_generation(dt)
 
     def render(self,canvas,dt):
         
@@ -325,7 +343,6 @@ class Maze:
 
         #while stack is not empty
         while (len(path)>0):
-
             curr = path[-1] #top of the stack
 
             adjacent_cells = curr.get_adjacent_cells() #get unvisited neighbours
@@ -356,6 +373,32 @@ class Maze:
         return lst
 
 
-        
+    def timestep_maze_generation(self,dt):
+
+        #while stack is not empty
+
+        if(len(self.v_path)<=0):
+
+            self.cells[-1][-1].delete_wall(WallLocation.RIGHT)
+            self.t_gen_complete = True
+            return
+
+
+        curr = self.v_path[-1] #top of the stack
+
+        adjacent_cells = curr.get_adjacent_cells() #get unvisited neighbours
+            
+
+        random_adj_cell = self.get_random_adj_cells(adjacent_cells)
+        #if no adjacent cells that are unvisited
+
+        if(random_adj_cell == None):
+            self.v_path.pop(-1) #pop stack back track
+        else:
+            self.create_path(random_adj_cell,curr)
+            random_adj_cell.set_visited()
+            self.v_path.append(random_adj_cell) #push to the stack
+
+    
 
 

@@ -143,7 +143,7 @@ class GameModeGame(GameMode):
             case GameDifficulty.MEDIUM:
                 self.maze = Maze((100,100),(10,15),WallType.WALL1)
             case GameDifficulty.HARD:
-                self.maze = Maze((100,100),(16,15),WallType.WALL2)
+                self.maze = Maze((100,100),(16,15),WallType.WALL2,)
             case GameDifficulty.NIGHTMARE:
                 self.maze = Maze((100,100),(10,15),WallType.WALL2)
             case _:
@@ -192,6 +192,8 @@ class GameModeGame(GameMode):
             self.player_controller.stop_player()
 
     def update(self,dt):
+
+        self.maze.update(dt)
 
         if(self.game_ended):
             self.game_end_time += dt
