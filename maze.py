@@ -17,6 +17,7 @@ class WallType(Enum):
     WALL3 = 3
 
 
+
 class Wall(pygame.sprite.Sprite):
 
     def __init__(self,pos=(100,100),horizontal=False,type: WallType = WallType.WALL2):
@@ -343,7 +344,7 @@ class Maze:
 
 
 
-        self.cells[0][0].delete_wall(WallLocation.TOP)
+        # self.cells[0][0].delete_wall(WallLocation.TOP)
         self.cells[-1][-1].delete_wall(WallLocation.RIGHT)
 
     def get_wall_list(self):

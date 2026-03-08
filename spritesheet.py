@@ -31,6 +31,21 @@ class Animation:
         
         return sprite
 
+    def play_once(self,dt)->pygame.Surface:
+
+
+        if(self.frame_time >= self.anim_length -1 ):
+            sprite = self.sprite_sheet.parse_sprite(self.name,str(self.anim_length-1))
+        else:
+            self.frame_time = (self.frame_time + (dt * self.anim_speed) ) 
+            self.frame_number = math.floor(self.frame_time)
+            sprite = self.sprite_sheet.parse_sprite(self.name,str(self.frame_number))
+        
+        sprite = pygame.transform.flip(sprite,self.flip[0],self.flip[1])
+
+        return sprite    
+
+
     def stop(self) -> pygame.Surface:
         self.frame_number = -1
         sprite = self.sprite_sheet.parse_sprite(self.name,str(frame_number))
@@ -45,6 +60,10 @@ class Animation:
         sprite = pygame.transform.flip(sprite,self.flip[0],self.flip[1])           
         
         return sprite
+    
+
+
+
 
 
 
@@ -56,7 +75,7 @@ class SpriteSheet:
         self.filename = filename
         self.fmeta_data = self.filename.replace('png','json')
 
-        self.SpriteSheet = pygame.image.load(filename).convert()
+        self.SpriteSheet = pygame.image.load(filename).convert_alpha()
 
         with open(self.fmeta_data) as f:
             self.data = json.load(f)
@@ -81,8 +100,8 @@ class SpriteSheet:
 
     def get_sprite(self,x,y,w,h) -> pygame.Surface:
 
-        sprite_s = pygame.Surface((w,h))
-        sprite_s.set_colorkey((0,0,0))
+        sprite_s = pygame.Surface((w,h),pygame.SRCALPHA)
+        # sprite_s.set_colorkey((0,0,0))
         sprite_s.blit(self.SpriteSheet,(0,0),(x,y,w,h))
         
 

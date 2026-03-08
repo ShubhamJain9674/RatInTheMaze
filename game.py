@@ -1,5 +1,5 @@
 import pygame
-from rat import Rat
+from rat import Rat,Cheese
 from maze import Wall,Cell,WallType,Maze
 from utilities import Button
 from enum import Enum
@@ -147,7 +147,13 @@ class GameModeGame(GameMode):
 
         self.wall_list = self.maze.get_wall_list()
         self.collision_manager = CollisionManager(self.player,self.wall_list)
-        self.player_controller = PlayerController(self.player) 
+        self.player_controller = PlayerController(self.player)
+        last_wall =  self.wall_list[-1]
+
+        self.cheese_pos = (last_wall.pos_x + (last_wall.rect.width ),last_wall.pos_y - (last_wall.rect.width/1.25))
+        # self.cheese_pos = (last_wall.pos_x,last_wall.pos_y)
+        self.cheese = Cheese(self.cheese_pos)
+        self.collision_manager.add_object(self.cheese)
 
         
     def handle_input(self,dt):
@@ -179,10 +185,12 @@ class GameModeGame(GameMode):
 
         self.handle_input(dt)
         self.player.update(dt)
+        self.cheese.update(dt)
 
     def render(self,canvas,dt):
         self.player.render(canvas)
-        self.maze.render(canvas,dt) 
+        self.maze.render(canvas,dt)
+        self.cheese.render(canvas) 
 
 
 
@@ -194,6 +202,7 @@ class CollisionManager:
         self.walls = walls
         
         self.wall_collision_list=[False for i in self.walls]
+        self.obj =[]
 
     def check_wall_collisions(self)->bool:
 
@@ -208,9 +217,15 @@ class CollisionManager:
                 self.wall_collision_list[i] = False
 
         self.player.collide_walls(rects)
+
+        for i in self.obj:
+            if(i.get_rect().colliderect(self.player.rect)):
+                i.handle_collision()
         
         return collision
 
+    def add_object(self,obj):
+        self.obj.append(obj)
 
 
 

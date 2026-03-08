@@ -8,7 +8,7 @@ import os
 
 class Rat(pygame.sprite.Sprite):
 
-    def __init__(self):
+    def __init__(self,pos=(110,110)):
 
         super().__init__()
 
@@ -44,9 +44,8 @@ class Rat(pygame.sprite.Sprite):
         self.rect = self.rat.get_rect()
 
 
-
-        self.posx = 50
-        self.posy = 50
+        self.posx = pos[0]
+        self.posy = pos[1]
        
 
         self.speed = 100
@@ -148,4 +147,39 @@ class Rat(pygame.sprite.Sprite):
         # pygame.draw.rect(surface,"green",self.rect)
 
 
-    
+class Cheese(pygame.sprite.Sprite):
+    def __init__(self,pos):
+        BASE_DIR = os.path.dirname(__file__)
+        image_path = os.path.join(BASE_DIR,"Images","s_spritesheet.png")  
+        self.cheese_sprite_sheet = SpriteSheet(image_path)
+        
+        self.cheese_animation = Animation(
+        self.cheese_sprite_sheet,
+        "cheese"
+        )
+        self.cheese = self.cheese_animation.get_default()
+        self.cheese = pygame.transform.scale(self.cheese,(40,40))
+
+        self.pos = pos
+        self.start_playing = False
+
+        self.rect = self.cheese.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+
+    def update(self,dt):
+
+        if(self.start_playing):
+            self.cheese = self.cheese_animation.play_once(dt)
+        self.cheese = pygame.transform.scale(self.cheese,(40,40))
+
+    def render(self,surface):
+        
+        # pygame.draw.rect(surface,"red",self.rect)
+        surface.blit(self.cheese,self.pos)
+
+    def get_rect(self):
+        return self.rect
+
+    def handle_collision(self):
+        self.start_playing = True
