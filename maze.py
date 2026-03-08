@@ -65,7 +65,6 @@ class Wall(pygame.sprite.Sprite):
     
     def render(self,surface,dt):
         surface.blit(self.wall,(self.pos_x,self.pos_y))
-        # pygame.draw.rect(surface,"red",self.rect)
 
 
 

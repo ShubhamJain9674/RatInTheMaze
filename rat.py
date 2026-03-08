@@ -4,8 +4,6 @@ import pygame
 import os
 
 
-
-
 class Rat(pygame.sprite.Sprite):
 
     def __init__(self,pos=(110,110)):
@@ -56,6 +54,10 @@ class Rat(pygame.sprite.Sprite):
         self.can_move_right = True
         self.can_move_top = True
         self.can_move_bottom = True
+
+        #end state
+        self.move_AI = False
+        self.time_to_move = 0
 
     def reset_movement(self):
         self.can_move_left = True
@@ -122,11 +124,21 @@ class Rat(pygame.sprite.Sprite):
     
 
 
-
     def stop(self):
         self.is_moving = False
 
+    def move_by_AI(self):
+        self.can_move = False
+
+        self.move_AI = True
+        
     def update(self,dt):
+
+        if(self.move_AI):
+            self.time_to_move += dt
+        if(self.time_to_move >= 1.4):
+            self.is_moving = True
+            self.posx = self.posx + self.speed  * dt
 
         if(self.is_moving):
             self.rat = self.animation.play(dt)
@@ -148,7 +160,10 @@ class Rat(pygame.sprite.Sprite):
 
 
 class Cheese(pygame.sprite.Sprite):
-    def __init__(self,pos):
+    def __init__(self,game_mode,pos):
+
+        self.game_mode = game_mode
+
         BASE_DIR = os.path.dirname(__file__)
         image_path = os.path.join(BASE_DIR,"Images","s_spritesheet.png")  
         self.cheese_sprite_sheet = SpriteSheet(image_path)
@@ -183,3 +198,5 @@ class Cheese(pygame.sprite.Sprite):
 
     def handle_collision(self):
         self.start_playing = True
+        self.game_mode.end_game()
+        

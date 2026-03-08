@@ -84,6 +84,9 @@ class GameModeMenu(GameMode):
         self.hard_button.hide_button()
         self.nightmare_button.hide_button()
 
+    def create_game(self,difficulty:GameDifficulty):
+        self.back_to_main_menu()
+        self.game.CreateGame(difficulty)
 
     def update(self,dt):
             
@@ -105,10 +108,10 @@ class GameModeMenu(GameMode):
         self.quit_button.on_pressed(self.quit_game)
         self.back_button.on_pressed(self.back_to_main_menu)
 
-        self.easy_button.on_pressed(self.game.CreateGame,[GameDifficulty.EASY])
-        self.medium_button.on_pressed(self.game.CreateGame,[GameDifficulty.MEDIUM])
-        self.hard_button.on_pressed(self.game.CreateGame,[GameDifficulty.HARD])
-        self.nightmare_button.on_pressed(self.game.CreateGame,[GameDifficulty.NIGHTMARE])
+        self.easy_button.on_pressed(self.create_game,[GameDifficulty.EASY])
+        self.medium_button.on_pressed(self.create_game,[GameDifficulty.MEDIUM])
+        self.hard_button.on_pressed(self.create_game,[GameDifficulty.HARD])
+        self.nightmare_button.on_pressed(self.create_game,[GameDifficulty.NIGHTMARE])
         
 
     
@@ -126,6 +129,8 @@ class GameModeMenu(GameMode):
         self.hard_button.render(canvas,dt)
         self.nightmare_button.render(canvas,dt)
 
+        self.game.set_camera_offset((0,0))
+
 
 class GameModeGame(GameMode):
 
@@ -134,15 +139,15 @@ class GameModeGame(GameMode):
         self.player = Rat()
         match difficulty:
             case GameDifficulty.EASY:
-                self.maze = Maze((100,100),(5,5),WallType.WALL3)
+                self.maze = Maze((100,100),(8,12),WallType.WALL3)
             case GameDifficulty.MEDIUM:
-                self.maze = Maze((100,100),(8,12),WallType.WALL1)
+                self.maze = Maze((100,100),(10,15),WallType.WALL1)
             case GameDifficulty.HARD:
-                self.maze = Maze((100,100),(15,15),WallType.WALL2)
+                self.maze = Maze((100,100),(16,15),WallType.WALL2)
             case GameDifficulty.NIGHTMARE:
-                self.maze = Maze((100,100),(8,12),WallType.WALL2)
+                self.maze = Maze((100,100),(10,15),WallType.WALL2)
             case _:
-                self.maze = Maze((100,100),(5,5),WallType.WALL3)
+                self.maze = Maze((100,100),(8,12),WallType.WALL3)
 
 
         self.wall_list = self.maze.get_wall_list()
@@ -152,8 +157,13 @@ class GameModeGame(GameMode):
 
         self.cheese_pos = (last_wall.pos_x + (last_wall.rect.width ),last_wall.pos_y - (last_wall.rect.width/1.25))
         # self.cheese_pos = (last_wall.pos_x,last_wall.pos_y)
-        self.cheese = Cheese(self.cheese_pos)
+        self.cheese = Cheese(self,self.cheese_pos)
         self.collision_manager.add_object(self.cheese)
+
+        #end game
+        self.game_ended = False
+        self.game_end_time = 0
+
 
         
     def handle_input(self,dt):
@@ -183,16 +193,39 @@ class GameModeGame(GameMode):
 
     def update(self,dt):
 
+        if(self.game_ended):
+            self.game_end_time += dt
+        if(self.game_end_time >=5):
+            self.game.end_game()
+
         self.handle_input(dt)
         self.player.update(dt)
         self.cheese.update(dt)
+
 
     def render(self,canvas,dt):
         self.player.render(canvas)
         self.maze.render(canvas,dt)
         self.cheese.render(canvas) 
+        offset = self.calculate_camera_offset()
+        self.game.set_camera_offset(offset)
+
+    def end_game(self):
+        self.player.move_by_AI()
+        self.game_ended = True
 
 
+    def calculate_camera_offset(self):
+        
+        x = 0
+        y = 0
+
+        if(self.player.posx > self.game.screen_dim[0]-100):
+            x = -(self.player.posx - (self.game.screen_dim[0] - 100))
+        if(self.player.posy > self.game.screen_dim[1]-100):
+            y = -(self.player.posy - (self.game.screen_dim[1] - 100))
+
+        return (x,y)
 
 
 class CollisionManager:
@@ -278,21 +311,35 @@ class Game:
         pygame.font.init()
 
         self.running = True
-        self.screen = pygame.display.set_mode((1280,720))
+        self.screen_dim = (1280,720)
+        self.screen = pygame.display.set_mode(self.screen_dim)
        
-        self.canvas = pygame.Surface((1280,720))
+        self.canvas = pygame.Surface((1500,3000))
         self.clock = pygame.time.Clock()
         
         self.game_mode_menu : GameMode = GameModeMenu(self) 
         self.game_mode_game : GameMode = None
         self.game_mode = self.game_mode_menu 
+
+        self.camera_offset_x = 0
+        self.camera_offset_y = 0
+
         
 
         self.dt = 0
-    
+
+
+    def set_camera_offset(self,offset):
+        self.camera_offset_x,self.camera_offset_y = offset[0],offset[1]
+
+
     def CreateGame(self,difficulty:GameDifficulty):
         self.game_mode_game = GameModeGame(self,difficulty)
         self.change_game_mode(GameModeType.GAME)
+
+    def end_game(self):
+        self.game_mode_game = None
+        self.change_game_mode(GameModeType.MENU)
 
     def change_game_mode(self,mode:GameModeType):
         
@@ -334,7 +381,7 @@ class Game:
         
         self.canvas.fill("black")
         self.game_mode.render(self.canvas,self.dt)
-        self.screen.blit(self.canvas,(0,0))
+        self.screen.blit(self.canvas,(0 + self.camera_offset_x,0 + self.camera_offset_y ))
 
         pygame.display.flip()
 
