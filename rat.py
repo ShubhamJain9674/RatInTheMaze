@@ -41,15 +41,52 @@ class Rat(pygame.sprite.Sprite):
 
 
         self.rat = self.animation.get_default()
+        self.rect = self.rat.get_rect()
 
 
 
         self.posx = 50
         self.posy = 50
+       
+
         self.speed = 100
         self.can_move = True
         self.is_moving = False
 
+        self.can_move_left = True
+        self.can_move_right = True
+        self.can_move_top = True
+        self.can_move_bottom = True
+
+    def reset_movement(self):
+        self.can_move_left = True
+        self.can_move_right = True
+        self.can_move_top = True
+        self.can_move_bottom = True
+
+    def collide_walls(self,rects):
+
+        PUSH_FACTOR = 0.032
+        for r in rects:
+
+            if(self.rect.bottom > r.top and self.rect.top < r.bottom):  #if vertical overlap
+                #check for horizontal overlaps
+                if( self.rect.right >= r.left and self.rect.left <= r.left ):
+                    self.can_move_right = False
+                    self.posx = self.posx - self.speed  * PUSH_FACTOR
+                if(self.rect.left <= r.right and self.rect.right >= r.right):
+                    self.can_move_left = False
+                    self.posx = self.posx - self.speed  * (-PUSH_FACTOR)
+                
+            if(self.rect.right > r.left and self.rect.left < r.right): #if horizontal overlap
+                #check for vertical overlap
+                if(self.rect.top <= r.bottom and self.rect.bottom >= r.bottom):
+                    self.can_move_top = False
+                    self.posy = self.posy - self.speed * (-PUSH_FACTOR)
+                if(self.rect.bottom >= r.top and self.rect.top <= r.top):
+                    self.can_move_bottom = False
+                    self.posy = self.posy - self.speed * PUSH_FACTOR
+        
 
 
     def move(self,dt,dirn = (0,0)):
@@ -65,31 +102,50 @@ class Rat(pygame.sprite.Sprite):
                 self.animation = self.r_animation
             if(dirn[0] <= -1):
                 self.animation = self.l_animation
-             
 
 
-            self.posx = self.posx + self.speed * dirn[0] * dt
-            self.posy = self.posy + self.speed * dirn[1] * dt
-
+            if(self.can_move_right and dirn[0] >= 1):
+                self.posx = self.posx + self.speed * dirn[0] * dt
+                       
+            if(self.can_move_left and dirn[0] <= -1):
+                self.posx = self.posx + self.speed * dirn[0] * dt
         
-        self.is_moving = True
+            if(self.can_move_top and dirn[1] <= -1):
+                self.posy = self.posy + self.speed * dirn[1] * dt
+
+            if(self.can_move_bottom and dirn[1] >= 1):
+                self.posy = self.posy + self.speed * dirn[1] * dt
+                
+
+            # print(self.can_move_left,self.can_move_right,self.can_move_top,self.can_move_bottom)
+
+            # self.reset_movement()
+    
+
+
 
     def stop(self):
         self.is_moving = False
 
-    def update(self):
-        pass
+    def update(self,dt):
 
-    def render(self,surface,dt):
-        
         if(self.is_moving):
-            sprite_image = self.animation.play(dt)
+            self.rat = self.animation.play(dt)
         else:
-            sprite_image = self.animation.get_default()
+            self.rat = self.animation.get_default()
 
 
-        sprite_image = pygame.transform.scale(sprite_image,(50,50))
-        surface.blit(sprite_image,(self.posx,self.posy))
+        self.rat = pygame.transform.scale(self.rat,(40,40))
+        width = self.rat.get_width() - 4
+        height = self.rat.get_height() - 4
+        
+        self.rect.update(self.posx,self.posy,width,height)
+
+
+    def render(self,surface):
+        
+        surface.blit(self.rat,(self.posx,self.posy))
+        # pygame.draw.rect(surface,"green",self.rect)
 
 
     

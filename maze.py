@@ -17,7 +17,7 @@ class WallType(Enum):
     WALL3 = 3
 
 
-class Wall:
+class Wall(pygame.sprite.Sprite):
 
     def __init__(self,pos=(100,100),horizontal=False,type: WallType = WallType.WALL2):
 
@@ -57,12 +57,16 @@ class Wall:
         self.rect.x = self.pos_x
         self.rect.y = self.pos_y
         
+        
 
     def get_height(self):
         return self.sprite_sheet.get_sprite_height(self.animation.name)
     
     def render(self,surface,dt):
         surface.blit(self.wall,(self.pos_x,self.pos_y))
+        # pygame.draw.rect(surface,"red",self.rect)
+
+
 
 
 
@@ -91,7 +95,12 @@ class Cell:
 
         self.visited = False
 
-    
+    def get_wall_list(self):
+        lst = []
+        for i in (self.l_wall,self.t_wall,self.b_wall,self.r_wall):
+            if(i):
+                lst.append(i)
+        return lst
 
     def render(self,canvas,dt):
         
@@ -186,7 +195,6 @@ class Maze:
 
         self.cells = []
         
-
         self.create_grid(pos)
         self.create_maze_pattern()
 
@@ -338,9 +346,14 @@ class Maze:
         self.cells[0][0].delete_wall(WallLocation.TOP)
         self.cells[-1][-1].delete_wall(WallLocation.RIGHT)
 
+    def get_wall_list(self):
+        lst = []
+        for rows in self.cells:
+            for cell in rows:
+                for i in cell.get_wall_list():
+                    lst.append(i)
 
-
-
+        return lst
 
 
         

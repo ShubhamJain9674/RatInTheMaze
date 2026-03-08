@@ -4,6 +4,36 @@ from maze import Wall,Cell,WallType,Maze
 
 
 
+class CollisionManager:
+    def __init__(self,player,walls:pygame.sprite.Sprite=[],objects:pygame.sprite.Sprite=[]):
+    
+        self.player = player
+        self.walls = walls
+        
+        self.wall_collision_list=[False for i in self.walls]
+
+    def check_wall_collisions(self)->bool:
+
+        rects = []
+        collision = False
+        for i in range(0,len(self.walls)):
+            if(self.player.rect.colliderect(self.walls[i].rect)):
+                self.wall_collision_list[i] = True
+                rects.append(self.walls[i].rect)
+                collision = True
+            else:
+                self.wall_collision_list[i] = False
+
+        self.player.collide_walls(rects)
+        
+        return collision
+
+
+
+
+
+
+
 class Command:
     def __init__(self):
         pass
@@ -58,10 +88,13 @@ class Game:
         self.player_controller = PlayerController(self.player) 
         self.dt = 0
 
-        #debug
-        self.maze = Maze((100,100),(8,15),WallType.WALL3)
 
+        #debug
+        self.maze = Maze((100,100),(8,15),WallType.WALL2)
+        self.wall_list = self.maze.get_wall_list()
+       
         
+        self.collision_manager = CollisionManager(self.player,self.wall_list)
     
     def handle_input(self):
         
@@ -76,6 +109,9 @@ class Game:
         keys = pygame.key.get_pressed()
 
         player_moving = False
+
+        if(not self.collision_manager.check_wall_collisions()):
+            self.player.reset_movement()
     
         if(keys[pygame.K_w]):
             self.player_controller.w_command.execute(self.dt)
@@ -100,12 +136,14 @@ class Game:
 
     
     def update(self):
-        pass
+        self.player.update(self.dt)
+        
+
     
     def render(self):
         
         self.canvas.fill("black")
-        self.player.render(self.canvas,self.dt)
+        self.player.render(self.canvas)
     
         self.maze.render(self.canvas,self.dt)    
 
